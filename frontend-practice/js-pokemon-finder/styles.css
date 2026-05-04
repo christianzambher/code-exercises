@@ -38,3 +38,16 @@ img {
   margin-top: 20px;
   font-weight: bold;
 }
+
+#history {
+  margin-top: 20px;
+}
+
+.history-item {
+  cursor: pointer;
+  margin: 5px;
+  display: inline-block;
+  padding: 5px 10px;
+  background: #ddd;
+  border-radius: 5px;
+}

@@ -2,6 +2,7 @@ const input = document.getElementById("pokemonInput");
 const button = document.getElementById("searchBtn");
 
 const statusDiv = document.getElementById("status");
+const historyDiv = document.getElementById("history");
 
 const card = document.getElementById("pokemonCard");
 const nameEl = document.getElementById("pokemonName");
@@ -9,8 +10,17 @@ const imgEl = document.getElementById("pokemonImg");
 const imgShinyEl = document.getElementById("pokemonImgShiny");
 const typesEl = document.getElementById("pokemonTypes");
 
-// Evento principal
-button.addEventListener("click", () => {
+// Eventos
+button.addEventListener("click", handleSearch);
+input.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") handleSearch();
+});
+
+// Inicializar historial
+loadHistory();
+
+// Handler principal
+function handleSearch() {
   const value = input.value.toLowerCase().trim();
 
   if (!value) {
@@ -18,25 +28,35 @@ button.addEventListener("click", () => {
     return;
   }
 
-  fetchPokemon(value);
-});
+  getPokemon(value);
+}
 
-// Fetch a API
-async function fetchPokemon(name) {
+// Obtener Pokémon (cache + API)
+async function getPokemon(name) {
   try {
     showStatus("Cargando...", "loading");
     card.classList.add("hidden");
 
+    const cached = getFromCache(name);
+
+    if (cached) {
+      renderPokemon(cached);
+      showStatus("(cache)", "success");
+      saveToHistory(name);
+      return;
+    }
+
     let url = 'https://pokeapi.co/api/v2/pokemon/' + name;
     const response = await fetch(url);
 
-    if (!response.ok) {
-      throw new Error("No encontrado");
-    }
+    if (!response.ok) throw new Error("No encontrado");
 
     const data = await response.json();
 
+    saveToCache(name, data);
     renderPokemon(data);
+    saveToHistory(name);
+
     showStatus("", "");
 
   } catch (error) {
@@ -44,21 +64,66 @@ async function fetchPokemon(name) {
   }
 }
 
-// Render UI
+// Cache
+function getFromCache(name) {
+  const data = localStorage.getItem(`pokemon_${name}`);
+  return data ? JSON.parse(data) : null;
+}
+
+function saveToCache(name, data) {
+  localStorage.setItem(`pokemon_${name}`, JSON.stringify(data));
+}
+
+// Historial
+function saveToHistory(name) {
+  let history = JSON.parse(localStorage.getItem("history")) || [];
+
+  if (!history.includes(name)) {
+    history.unshift(name);
+    if (history.length > 5) history.pop();
+  }
+
+  localStorage.setItem("history", JSON.stringify(history));
+  renderHistory();
+}
+
+function loadHistory() {
+  renderHistory();
+}
+
+function renderHistory() {
+  const history = JSON.parse(localStorage.getItem("history")) || [];
+
+  historyDiv.innerHTML = "<h3>Historial</h3>";
+
+  history.forEach(name => {
+    const el = document.createElement("span");
+    el.textContent = name;
+    el.classList.add("history-item");
+
+    el.addEventListener("click", () => {
+      input.value = name;
+      getPokemon(name);
+    });
+
+    historyDiv.appendChild(el);
+  });
+}
+
+// UI
 function renderPokemon(data) {
-    console.log(data);
-    imgEl.src = null; // Limpia imagen anterior
-    imgShinyEl.src = null; // Limpia imagen shiny anterior
+  imgEl.src = null; // Limpia imagen anterior
+  imgShinyEl.src = null; // Limpia imagen shiny anterior
 
-    nameEl.textContent = data.name.toUpperCase();
-    
-    imgEl.src = data.sprites.other["official-artwork"]["front_default"];
-    imgShinyEl.src = data.sprites.other["official-artwork"]["front_shiny"];
+  nameEl.textContent = data.name.toUpperCase();
 
-    const types = data.types.map(t => t.type.name).join(", ");
-    typesEl.textContent = `Tipo: ${types}`;
+  imgEl.src = data.sprites.other["official-artwork"]["front_default"];
+  imgShinyEl.src = data.sprites.other["official-artwork"]["front_shiny"];
 
-    card.classList.remove("hidden");
+  const types = data.types.map(t => t.type.name).join(", ");
+  typesEl.textContent = `Tipo: ${types}`;
+
+  card.classList.remove("hidden");
 }
 
 // Status UI
@@ -67,6 +132,7 @@ function showStatus(message, type) {
 
   statusDiv.style.color =
     type === "error" ? "red" :
-    type === "loading" ? "blue" :
-    "black";
+      type === "loading" ? "blue" :
+        type === "success" ? "green" :
+          "black";
 }
