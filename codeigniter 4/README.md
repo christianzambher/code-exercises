@@ -34,3 +34,9 @@ Hacer una copia de env y renombralo como .env
 ## 📂 Structure
 ├── codeigniter4/  
 └── ci4-db-migrations/  
+└── ci4-models-querybuilder/  
+└── ci4-auth-seguridad/  
+└── ci4-api-rest/  
+└── ci4-uploads/  
+└── ci4-pagination/  
+└── ci4-i18n-and-core/  
