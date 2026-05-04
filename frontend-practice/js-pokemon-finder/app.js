@@ -1,7 +1,11 @@
+const CACHE_TTL = 1000 * 60 * 5; // 5 minutos
+
 const input = document.getElementById("pokemonInput");
 const button = document.getElementById("searchBtn");
+const clearHistoryBtn = document.getElementById("clearHistoryBtn");
 
 const statusDiv = document.getElementById("status");
+const loader = document.getElementById("loader");
 const historyDiv = document.getElementById("history");
 
 const card = document.getElementById("pokemonCard");
@@ -15,6 +19,7 @@ button.addEventListener("click", handleSearch);
 input.addEventListener("keypress", (e) => {
   if (e.key === "Enter") handleSearch();
 });
+clearHistoryBtn.addEventListener("click", clearHistory);
 
 // Inicializar historial
 loadHistory();
@@ -34,7 +39,7 @@ function handleSearch() {
 // Obtener Pokémon (cache + API)
 async function getPokemon(name) {
   try {
-    showStatus("Cargando...", "loading");
+    setLoading(true);
     card.classList.add("hidden");
 
     const cached = getFromCache(name);
@@ -61,29 +66,53 @@ async function getPokemon(name) {
 
   } catch (error) {
     showStatus("Pokémon no encontrado", "error");
+  } finally {
+    setLoading(false);
   }
 }
 
 // Cache
 function getFromCache(name) {
   const data = localStorage.getItem(`pokemon_${name}`);
-  return data ? JSON.parse(data) : null;
+
+  if (!data) return null;
+
+  const parsed = JSON.parse(data);
+  const isExpired = Date.now() - parsed.timestamp > CACHE_TTL;
+
+  if (isExpired) {
+    localStorage.removeItem(`pokemon_${name}`);
+    return null;
+  }
+
+  return parsed;
 }
 
 function saveToCache(name, data) {
-  localStorage.setItem(`pokemon_${name}`, JSON.stringify(data));
+  const payload = {
+    data,
+    timestamp: Date.now()
+  };
+
+  localStorage.setItem(`pokemon_${name}`, JSON.stringify(payload));
 }
 
 // Historial
 function saveToHistory(name) {
   let history = JSON.parse(localStorage.getItem("history")) || [];
 
-  if (!history.includes(name)) {
-    history.unshift(name);
-    if (history.length > 5) history.pop();
-  }
+  // Evitar duplicados
+  history = history.filter(n => n !== name);
+  history.unshift(name); // Agregar al inicio
+
+  if (history.length > 5) history.pop();
 
   localStorage.setItem("history", JSON.stringify(history));
+  renderHistory();
+}
+
+function clearHistory() {
+  localStorage.removeItem("history");
   renderHistory();
 }
 
@@ -135,4 +164,8 @@ function showStatus(message, type) {
       type === "loading" ? "blue" :
         type === "success" ? "green" :
           "black";
+}
+
+function setLoading(isLoading) {
+  loader.classList.toggle("hidden", !isLoading);
 }

@@ -16,6 +16,7 @@ input {
 button {
   padding: 10px;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 .card {
@@ -50,4 +51,9 @@ img {
   padding: 5px 10px;
   background: #ddd;
   border-radius: 5px;
+}
+
+#loader {
+  margin-top: 10px;
+  font-weight: bold;
 }
