@@ -14,17 +14,27 @@ const imgEl = document.getElementById("pokemonImg");
 const imgShinyEl = document.getElementById("pokemonImgShiny");
 const typesEl = document.getElementById("pokemonTypes");
 
-// Eventos
+const exploreBtn = document.getElementById("exploreBtn");
+const listContainer = document.getElementById("listContainer");
+
+let currentController = null;
+
+//#region Eventos
 button.addEventListener("click", handleSearch);
+
 input.addEventListener("keypress", (e) => {
   if (e.key === "Enter") handleSearch();
 });
+
 clearHistoryBtn.addEventListener("click", clearHistory);
+exploreBtn.addEventListener("click", loadPokemonList);
+//#endregion
 
-// Inicializar historial
+//#region Init
 loadHistory();
+//#endregion
 
-// Handler principal
+//#region Handlers
 function handleSearch() {
   const value = input.value.toLowerCase().trim();
 
@@ -35,10 +45,17 @@ function handleSearch() {
 
   getPokemon(value);
 }
+//#endregion
 
+//#region Core
 // Obtener Pokémon (cache + API)
 async function getPokemon(name) {
   try {
+    // Cancelar petición anterior si existe
+    if (currentController) currentController.abort();
+
+    currentController = new AbortController();
+
     setLoading(true);
     card.classList.add("hidden");
 
@@ -51,27 +68,32 @@ async function getPokemon(name) {
       return;
     }
 
-    let url = 'https://pokeapi.co/api/v2/pokemon/' + name;
-    const response = await fetch(url);
+    let url = `https://pokeapi.co/api/v2/pokemon/${name}`;
+    const response = await fetch(url, { signal: currentController.signal });
 
-    if (!response.ok) throw new Error("No encontrado");
+    if (!response.ok) throw new Error();
 
     const data = await response.json();
 
-    saveToCache(name, data);
-    renderPokemon(data);
+    const mapped = mapPokemon(data);
+
+    saveToCache(name, mapped);
+    renderPokemon(mapped);
     saveToHistory(name);
 
     showStatus("", "");
 
   } catch (error) {
+    console.error(error);
+    if (error.name === "AbortError") return;
     showStatus("Pokémon no encontrado", "error");
   } finally {
     setLoading(false);
   }
 }
+//#endregion
 
-// Cache
+//#region Cache(TTL)
 function getFromCache(name) {
   const data = localStorage.getItem(`pokemon_${name}`);
 
@@ -85,19 +107,28 @@ function getFromCache(name) {
     return null;
   }
 
-  return parsed;
+  return parsed.data;
 }
 
 function saveToCache(name, data) {
-  const payload = {
-    data,
-    timestamp: Date.now()
-  };
+  try {
+    const payload = {
+      data,
+      timestamp: Date.now()
+    };
 
-  localStorage.setItem(`pokemon_${name}`, JSON.stringify(payload));
+    localStorage.setItem(`pokemon_${name}`, JSON.stringify(payload));
+  } catch (e) {
+    if (e.name === "QuotaExceededError") {
+      console.warn("Cache lleno, limpiando...");
+      localStorage.clear();
+    }
+  }
+
 }
+//#endregion
 
-// Historial
+//#region Historial
 function saveToHistory(name) {
   let history = JSON.parse(localStorage.getItem("history")) || [];
 
@@ -138,24 +169,63 @@ function renderHistory() {
     historyDiv.appendChild(el);
   });
 }
+//#endregion
 
-// UI
+//#region Explorar
+async function loadPokemonList() {
+  try {
+    setLoading(true);
+
+    const response = await fetch(
+      "https://pokeapi.co/api/v2/pokemon?limit=20"
+    );
+
+    if (!response.ok) throw new Error();
+
+    const data = await response.json();
+
+    renderList(data.results);
+
+  } catch {
+    showStatus("Error cargando lista", "error");
+  } finally {
+    setLoading(false);
+  }
+}
+
+function renderList(list) {
+  listContainer.innerHTML = "<h3>Explorar</h3>";
+
+  list.forEach(pokemon => {
+    const el = document.createElement("div");
+    el.textContent = pokemon.name;
+    el.classList.add("list-item");
+
+    el.addEventListener("click", () => {
+      input.value = pokemon.name;
+      getPokemon(pokemon.name);
+    });
+
+    listContainer.appendChild(el);
+  });
+}
+//#endregion
+
+//#region UI
 function renderPokemon(data) {
-  imgEl.src = null; // Limpia imagen anterior
-  imgShinyEl.src = null; // Limpia imagen shiny anterior
+  imgEl.src = ""; // Limpia imagen anterior
+  imgShinyEl.src = ""; // Limpia imagen shiny anterior
 
   nameEl.textContent = data.name.toUpperCase();
 
-  imgEl.src = data.sprites.other["official-artwork"]["front_default"];
-  imgShinyEl.src = data.sprites.other["official-artwork"]["front_shiny"];
+  imgEl.src = data.image;
+  imgShinyEl.src = data.shiny;
 
-  const types = data.types.map(t => t.type.name).join(", ");
-  typesEl.textContent = `Tipo: ${types}`;
+  typesEl.textContent = `Tipo: ${data.types.join(", ")}`;
 
   card.classList.remove("hidden");
 }
 
-// Status UI
 function showStatus(message, type) {
   statusDiv.textContent = message;
 
@@ -169,3 +239,14 @@ function showStatus(message, type) {
 function setLoading(isLoading) {
   loader.classList.toggle("hidden", !isLoading);
 }
+
+//#region Mapeo de datos
+function mapPokemon(data) {
+  return { // Solo extraemos lo necesario para nuestra app
+    name: data.name,
+    image: data["sprites"]["other"]["official-artwork"]["front_default"],
+    shiny: data["sprites"]["other"]["official-artwork"]["front_shiny"],
+    types: data.types.map(t => t.type.name)
+  };
+}
+//#endregion
