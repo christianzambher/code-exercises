@@ -55,7 +55,7 @@ Collection of practice exercises organized by language and topic.
 └── Math.php  
 └── Strings.php  
 └── Number.php  
-
+│  
 ├── codeigniter4/  
 └── ci4-db-migrations/  
 └── ci4-models-querybuilder/  
@@ -64,6 +64,6 @@ Collection of practice exercises organized by language and topic.
 └── ci4-uploads/  
 └── ci4-pagination/  
 └── ci4-i18n-and-core/  
-
+│ 
 ├── frontend-practice/  
-└── js-pokemon-finder/  
+│ └── js-pokemon-finder/  
