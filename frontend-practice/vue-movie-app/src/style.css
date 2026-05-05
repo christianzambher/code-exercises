@@ -294,3 +294,11 @@ code {
     border-right-color: var(--border);
   }
 }
+
+.card {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f4f4f4;
+  border-radius: 10px;
+  display: inline-block;
+}

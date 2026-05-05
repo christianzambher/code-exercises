@@ -64,6 +64,7 @@ Collection of practice exercises organized by language and topic.
 └── ci4-uploads/  
 └── ci4-pagination/  
 └── ci4-i18n-and-core/  
-│ 
+│  
 ├── frontend-practice/  
-│ └── js-pokemon-finder/  
+│ ├── js-pokemon-finder/  
+│ └── vue-movie-app/  
