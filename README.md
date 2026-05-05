@@ -66,4 +66,4 @@ Collection of practice exercises organized by language and topic.
 └── ci4-i18n-and-core/  
 │ 
 ├── frontend-practice/  
-└── js-pokemon-finder/  
+│ └── js-pokemon-finder/  
