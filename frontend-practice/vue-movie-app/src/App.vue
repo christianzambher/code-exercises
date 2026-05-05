@@ -1,12 +1,13 @@
 <script setup>
 import { ref } from 'vue'
+import SearchBar from './components/SearchBar.vue'
+import PokemonCard from './components/PokemonCard.vue'
 
-const query = ref("")
 const pokemon = ref(null)
 const loading = ref(false)
 const error = ref(null)
 
-async function searchPokemon() {
+async function searchPokemon(name) {
   if (!query.value.trim()) return
 
   try {
@@ -41,14 +42,8 @@ async function searchPokemon() {
 <template>
   <h1>Vue Pokemon Finder</h1>
 
-  <!-- 🔍 Input -->
-  <input
-    v-model="query"
-    @keyup.enter="searchPokemon"
-    placeholder="Buscar Pokémon..."
-  />
-
-  <button @click="searchPokemon">Buscar</button>
+  <!-- 🔍 Search -->
+  <SearchBar @search="searchPokemon" />
 
   <!-- ⏳ Loading -->
   <p v-if="loading">Cargando...</p>
@@ -56,13 +51,6 @@ async function searchPokemon() {
   <!-- ❌ Error -->
   <p v-if="error">{{ error }}</p>
 
-  <!-- 🎴 Card -->
-  <div v-if="pokemon" class="card">
-    <h2>{{ pokemon.name.toUpperCase() }}</h2>
-
-    <img :src="pokemon.image" />
-    <img :src="pokemon.shiny" />
-
-    <p>Tipo: {{ pokemon.types.join(', ') }}</p>
-  </div>
+  <!-- 🃏 Pokémon Card -->
+  <PokemonCard v-if="pokemon" :pokemon="pokemon" />
 </template>

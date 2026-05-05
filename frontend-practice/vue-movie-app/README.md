@@ -27,3 +27,9 @@ pero para simplificar el desarrollo se utiliza actualmente PokeAPI como fuente d
 - Uso de Vue Composition API (ref)
 - Manejo de estados reactivos (loading, error, data)
 - Consumo de API sin necesidad de autenticación
+
+## Fase 3 - Componentización
+
+- Separación en componentes reutilizables
+- Comunicación entre componentes con props y emits
+- Mejor organización del código
