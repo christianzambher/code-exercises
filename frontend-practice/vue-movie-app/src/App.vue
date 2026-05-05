@@ -8,15 +8,13 @@ const loading = ref(false)
 const error = ref(null)
 
 async function searchPokemon(name) {
-  if (!query.value.trim()) return
-
   try {
     loading.value = true
     error.value = null
     pokemon.value = null
 
     const res = await fetch(
-      `https://pokeapi.co/api/v2/pokemon/${query.value.toLowerCase()}`
+      `https://pokeapi.co/api/v2/pokemon/${name.toLowerCase()}`
     )
 
     if (!res.ok) throw new Error()
