@@ -33,3 +33,9 @@ pero para simplificar el desarrollo se utiliza actualmente PokeAPI como fuente d
 - Separación en componentes reutilizables
 - Comunicación entre componentes con props y emits
 - Mejor organización del código
+
+## Fase 4 - Composables
+
+- Separación de lógica en composables
+- Implementación de usePokemon para manejo de estado y consumo de API
+- Mejora en reutilización y mantenibilidad del código
