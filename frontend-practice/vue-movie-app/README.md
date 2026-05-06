@@ -39,3 +39,10 @@ pero para simplificar el desarrollo se utiliza actualmente PokeAPI como fuente d
 - Separación de lógica en composables
 - Implementación de usePokemon para manejo de estado y consumo de API
 - Mejora en reutilización y mantenibilidad del código
+
+## Fase 5 - Favoritos
+
+- Implementación de sistema de favoritos
+- Persistencia con localStorage
+- Manejo de estado reactivo con watch
+- Interacción entre composables

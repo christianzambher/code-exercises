@@ -302,3 +302,20 @@ code {
   border-radius: 10px;
   display: inline-block;
 }
+
+.card h2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color:#08060d;
+}
+
+.card span {
+  margin-left: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.card span.favorito {
+  color: gold;
+}
