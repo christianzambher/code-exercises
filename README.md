@@ -67,4 +67,5 @@ Collection of practice exercises organized by language and topic.
 │  
 ├── frontend-practice/  
 │ ├── js-pokemon-finder/  
+| ├── jquery-rickmorty/  
 │ └── vue-movie-app/  
