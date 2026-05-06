@@ -8,6 +8,7 @@ Aplicación frontend desarrollada con jQuery que consume la API de Rick & Morty 
 * JavaScript
 * HTML
 * CSS
+* Bootstrap
 
 ## ⚙️ Funcionalidades
 
@@ -15,6 +16,7 @@ Aplicación frontend desarrollada con jQuery que consume la API de Rick & Morty 
 * 📋 Listado dinámico
 * 🔄 Paginación básica
 * ⚡ Consumo de API con AJAX
+* 🎨 Interfaz responsive con Bootstrap
 
 ## 📦 Instalación
 

@@ -47,9 +47,13 @@ function loadCharacters() {
 function renderCharacters(list) {
   list.forEach(character => {
     const card = `
-      <div class="card">
-        <img src="${character.image}" />
-        <p>${character.name}</p>
+      <div class="col-md-3">
+        <div class="card h-100 text-center">
+          <img src="${character.image}" class="card-img-top" />
+          <div class="card-body">
+            <h6 class="card-title">${character.name}</h6>
+          </div>
+        </div>
       </div>
     `;
 
