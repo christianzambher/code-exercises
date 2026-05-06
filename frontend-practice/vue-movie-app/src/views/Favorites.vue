@@ -1,8 +1,8 @@
 <script setup>
-import PokemonCard from '../components/PokemonCard.vue' 
+import PokemonCard from '../components/PokemonCard.vue'
 import { useFavorites } from '../composables/useFavorites.js'
 
-const { favorites, toggleFavorite, isFavorite } = useFavorites()
+const { favorites, toggleFavorite, isFavorite, clearFavorites } = useFavorites()
 </script>
 
 <template>
@@ -10,11 +10,11 @@ const { favorites, toggleFavorite, isFavorite } = useFavorites()
 
     <p v-if="favorites.length === 0">No tienes favoritos aún</p>
 
-    <div v-for="pokemon in favorites" :key="pokemon.name">
-    <PokemonCard
-      :pokemon="pokemon"
-      :toggleFavorite="toggleFavorite"
-      :isFavorite="isFavorite"
-    />
-  </div>
+    <button @click="clearFavorites">Limpiar favoritos</button>
+
+    <div class="grid">
+        <div v-for="pokemon in favorites" :key="pokemon.name">
+            <PokemonCard :pokemon="pokemon" :toggleFavorite="toggleFavorite" :isFavorite="isFavorite" />
+        </div>
+    </div>
 </template>

@@ -1,55 +1,47 @@
-# Vue Movie Explorer
+# Vue Pokémon Finder
 
-Aplicación frontend desarrollada con Vue 3 que consume una API externa para explorar películas.
+Aplicación SPA desarrollada con Vue 3 que permite buscar Pokémon y gestionar favoritos con persistencia en cliente.
 
-## Tecnologías
-- Vue 3
-- Vite
-- JavaScript
+## 🚀 Demo
 
-## Instalación
+https://vue-pokemon-app-xi.vercel.app/
+
+## 🧠 Tecnologías
+
+* Vue 3 (Composition API)
+* Vue Router
+* JavaScript
+* CSS
+
+## ⚙️ Funcionalidades
+
+* 🔍 Búsqueda de Pokémon
+* ⭐ Sistema de favoritos
+* 💾 Persistencia con localStorage
+* 🔄 Navegación SPA (Home / Favorites)
+* ⚡ Manejo de estados (loading, error)
+
+## 🏗️ Arquitectura
+
+* Componentes reutilizables (`SearchBar`, `PokemonCard`)
+* Composables (`usePokemon`, `useFavorites`)
+* Separación por vistas (`Home`, `Favorites`)
+* Manejo de estado reactivo
+
+## 📦 Instalación
 
 ```bash
 npm install
 npm run dev
 ```
-## Nota
 
-El proyecto originalmente estaba orientado a consumo de una API de películas,
-pero para simplificar el desarrollo se utiliza actualmente PokeAPI como fuente de datos.
+## 🧪 Aprendizajes clave
 
-## Estado del proyecto
-🚧 En desarrollo (fase inicial)
+* Uso de Composition API en Vue 3
+* Separación de lógica mediante composables
+* Manejo de estado y persistencia en frontend
+* Implementación de SPA con Vue Router
 
-## Fase 2 - Búsqueda con Vue
+## 📌 Nota
 
-- Implementación de búsqueda de Pokémon
-- Uso de Vue Composition API (ref)
-- Manejo de estados reactivos (loading, error, data)
-- Consumo de API sin necesidad de autenticación
-
-## Fase 3 - Componentización
-
-- Separación en componentes reutilizables
-- Comunicación entre componentes con props y emits
-- Mejor organización del código
-
-## Fase 4 - Composables
-
-- Separación de lógica en composables
-- Implementación de usePokemon para manejo de estado y consumo de API
-- Mejora en reutilización y mantenibilidad del código
-
-## Fase 5 - Favoritos
-
-- Implementación de sistema de favoritos
-- Persistencia con localStorage
-- Manejo de estado reactivo con watch
-- Interacción entre composables
-
-## Fase 6 - Navegación y vistas
-
-- Implementación de Vue Router
-- Separación en vistas (Home / Favorites)
-- Reutilización de componentes
-- Manejo de estado compartido entre vistas
+Este proyecto se enfoca en la implementación de buenas prácticas de desarrollo frontend moderno utilizando Vue 3.
