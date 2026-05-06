@@ -46,3 +46,10 @@ pero para simplificar el desarrollo se utiliza actualmente PokeAPI como fuente d
 - Persistencia con localStorage
 - Manejo de estado reactivo con watch
 - Interacción entre composables
+
+## Fase 6 - Navegación y vistas
+
+- Implementación de Vue Router
+- Separación en vistas (Home / Favorites)
+- Reutilización de componentes
+- Manejo de estado compartido entre vistas
